@@ -16,11 +16,23 @@ namespace WebAPIContactDemo.Models
     public partial class Contact
     {
         public int Id { get; set; }
+
         [Required(ErrorMessage = "First name is required")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "First Name should be less than 51 characters")]
         public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required")]
+        [StringLength(50, ErrorMessage = "Last Name should be less than 51 characters")]
         public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [StringLength(100, ErrorMessage = "Email should be less than 100 characters")]
+        [RegularExpression(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", ErrorMessage= "Enter a valid email Id")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Phone No. is required")]
+        [StringLength(10, ErrorMessage = "Phone No should be 10 digits")]
+        [RegularExpression(@"^(\+?\d{1,4}[\s-])?(?!0+\s+,?$)\d{10}\s*,?$", ErrorMessage = "Enter a vaild Phone No.")]
         public string Phone { get; set; }
         public bool IsActive { get; set; }
     }
