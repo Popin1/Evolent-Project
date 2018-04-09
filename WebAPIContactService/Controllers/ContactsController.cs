@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -13,9 +14,14 @@ namespace WebAPIContactDemo.Controllers
         private ContactEntityDB db = new ContactEntityDB();
 
         // GET: api/Contacts
-        public IQueryable<Contact> GetContacts()
+        public IList<Contact> GetContacts()
         {
-            return db.Contacts;
+            //Contact contact = new Contact { FirstName = "Popin", LastName = "Lisham", Email = "asasd@asf", Phone = "98354769", IsActive = true };
+            //Contact contact1 = new Contact { FirstName = "Popin", LastName = "Lisham", Email = "asasd@asf", Phone = "98354769", IsActive = true };
+            //IList<Contact> contacts = new List<Contact>() { contact ,contact1 };
+            //return contacts;
+
+            return db.Contacts.ToList();
         }
 
         // GET: api/Contacts/5
@@ -27,7 +33,7 @@ namespace WebAPIContactDemo.Controllers
             {
                 return NotFound();
             }
-
+            //Contact contact = new Contact { FirstName = "Popin", LastName = "Lisham", Email = "asasd@asf", Phone = "98354769", IsActive = true };
             return Ok(contact);
         }
 
