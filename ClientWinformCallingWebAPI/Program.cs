@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Diagnostics;
 
 namespace ClientWinformCallingWebAPI
 {
@@ -17,6 +18,7 @@ namespace ClientWinformCallingWebAPI
         [STAThread]
         static void Main()
         {
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             HttpClient _client = new HttpClient();

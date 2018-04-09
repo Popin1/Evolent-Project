@@ -27,7 +27,12 @@ namespace WebAPIContactDemo.Models
 
         [Required(ErrorMessage = "Email is required")]
         [StringLength(100, ErrorMessage = "Email should be less than 100 characters")]
-        [RegularExpression(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", ErrorMessage= "Enter a valid email Id")]
+        [RegularExpression(@"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+                                        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?
+				                            [0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+                                        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?
+				                            [0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                                        + @"([a-zA-Z0-9]+[\w-]+\.)+[a-zA-Z]{1}[a-zA-Z0-9-]{1,23})$", ErrorMessage= "Enter a valid email Id")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Phone No. is required")]

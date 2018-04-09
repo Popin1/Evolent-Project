@@ -1,5 +1,8 @@
 ﻿using ClientWinformCallingWebAPI.Model;
+using ClientWinformCallingWebAPI.Properties;
+using ClientWinformCallingWebAPI.Validation;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 
@@ -19,26 +22,44 @@ namespace ClientWinformCallingWebAPI
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            //validation
+            
             HttpResponseMessage response=new HttpResponseMessage();
+            ContactValidator validator = new ContactValidator();
+            Contact contact = new Contact { FirstName = firstNameTextBox.Text, LastName = lastNameTextBox.Text, Email = emailTextBox.Text, Phone = phoneNoTextBox.Text };
             if (_contact == null)
             {
-                Contact contact = new Contact { FirstName = firstNameTextBox.Text, LastName = lastNameTextBox.Text, Email = emailTextBox.Text, Phone = phoneNoTextBox.Text };
-                response = _client.PostAsJsonAsync("Contacts", contact).Result;
+                if (validator.Validate(contact))
+                {
+                    response = _client.PostAsJsonAsync("Contacts", contact).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show(Resources.SucesfullyInsertUpdated);
+                    }
+                    else
+                    {
+                        MessageBox.Show(Resources.ErrorInsertedUpdated);
+                        EventLog.WriteEntry("Application", response.ReasonPhrase + " " + response.RequestMessage, EventLogEntryType.Error);
+                    }
+                }
             }
             else
             {
-                string uri = "Contacts/" + _contact.Id.ToString();
-                response = _client.PutAsJsonAsync(uri, _contact).Result;
+                if (validator.Validate(contact))
+                {
+                    string uri = "Contacts/" + _contact.Id.ToString();
+                    response = _client.PutAsJsonAsync(uri, contact).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show(Resources.SucesfullyInsertUpdated);
+                    }
+                    else
+                    {
+                        MessageBox.Show(Resources.ErrorInsertedUpdated);
+                        EventLog.WriteEntry("Application", response.ReasonPhrase + " " + response.RequestMessage, EventLogEntryType.Error);
+                    }
+                }
             }
-            if(response.IsSuccessStatusCode)
-            {
-                MessageBox.Show("Sucessfully inserted / updated ");
-            }
-            else
-            {
-                MessageBox.Show("Error occurs while inserting / updating. Please refer the log file for details.");
-            }
+            
         }
 
         private void InsertOrUpdateForm_Load(object sender, EventArgs e)

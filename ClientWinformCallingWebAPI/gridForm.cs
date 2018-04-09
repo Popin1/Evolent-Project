@@ -1,6 +1,8 @@
 ﻿using ClientWinformCallingWebAPI.Model;
+using ClientWinformCallingWebAPI.Properties;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 
@@ -18,25 +20,25 @@ namespace ClientWinformCallingWebAPI
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            refeshGrid();
+            refreshGrid();
         }
 
         private void updateButton_Click(object sender, EventArgs e)
         {
             if (contactsGridView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select the row to update");
+                MessageBox.Show(Resources.SelectRowUpdate);
             }
             else
             {
                 InsertOrUpdateForm update = new InsertOrUpdateForm(selectedRow(), _client);
                 update.ShowDialog();
-                refeshGrid();
+                refreshGrid();
             }
             
         }
 
-        private void refeshGrid()
+        private void refreshGrid()
         {
             HttpResponseMessage result = _client.GetAsync("contacts").Result;  // Blocking call!
             if (result.IsSuccessStatusCode)
@@ -46,7 +48,8 @@ namespace ClientWinformCallingWebAPI
             }
             else
             {
-                MessageBox.Show("Error");
+                MessageBox.Show(Resources.ErrorDataGrid);
+                EventLog.WriteEntry("Application", result.ReasonPhrase + " " + result.RequestMessage, EventLogEntryType.Error);
             }
         }
 
@@ -66,7 +69,7 @@ namespace ClientWinformCallingWebAPI
         {
             InsertOrUpdateForm update = new InsertOrUpdateForm(null, _client);
             update.ShowDialog();
-            refeshGrid();
+            refreshGrid();
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
@@ -74,7 +77,7 @@ namespace ClientWinformCallingWebAPI
             HttpResponseMessage response = new HttpResponseMessage();
             if (contactsGridView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select the row to delete");
+                MessageBox.Show(Resources.SelectRowDelete);
             }
             else
             {
@@ -83,12 +86,13 @@ namespace ClientWinformCallingWebAPI
             }
             if (response.IsSuccessStatusCode)
             {
-                MessageBox.Show("Sucessfully deleted ");
-                refeshGrid();
+                MessageBox.Show(Resources.SucessfullyDeleted);
+                refreshGrid();
             }
             else
             {
-                MessageBox.Show("Error occurs while deleting. Please refer the event viwer for details.");                
+                MessageBox.Show(Resources.DeleteError);
+                EventLog.WriteEntry("Application", response.ReasonPhrase + " " + response.RequestMessage, EventLogEntryType.Error);
             }
         }
        
