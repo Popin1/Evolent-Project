@@ -16,8 +16,8 @@ namespace WebAPIContactDemo.Models
     public partial class Contact
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Name is required")]
-        [StringLength(1)]
+        [Required(ErrorMessage = "First name is required")]
+        [StringLength(50)]
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
