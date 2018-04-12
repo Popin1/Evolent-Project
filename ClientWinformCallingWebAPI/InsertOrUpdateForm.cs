@@ -22,10 +22,10 @@ namespace ClientWinformCallingWebAPI
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            
-            HttpResponseMessage response=new HttpResponseMessage();
+
+            HttpResponseMessage response = new HttpResponseMessage();
             ContactValidator validator = new ContactValidator();
-            Contact contact = new Contact { FirstName = firstNameTextBox.Text, LastName = lastNameTextBox.Text, Email = emailTextBox.Text, Phone = phoneNoTextBox.Text };
+            Contact contact = new Contact { FirstName = firstNameTextBox.Text, LastName = lastNameTextBox.Text, Email = emailTextBox.Text, Phone = phoneNoTextBox.Text.Trim(), IsActive = true };
             if (_contact == null)
             {
                 if (validator.Validate(contact))
@@ -33,12 +33,11 @@ namespace ClientWinformCallingWebAPI
                     response = _client.PostAsJsonAsync("Contacts", contact).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show(Resources.SucesfullyInsertUpdated);
+                        Success();
                     }
                     else
                     {
-                        MessageBox.Show(Resources.ErrorInsertedUpdated);
-                        EventLog.WriteEntry("Application", response.ReasonPhrase + " " + response.RequestMessage, EventLogEntryType.Error);
+                        Failure(response);
                     }
                 }
             }
@@ -46,31 +45,42 @@ namespace ClientWinformCallingWebAPI
             {
                 if (validator.Validate(contact))
                 {
-                    string uri = "Contacts/" + _contact.Id.ToString();
+                    string uri = "Contacts?id=" + _contact.Id.ToString();
+                    contact.Id = _contact.Id;
                     response = _client.PutAsJsonAsync(uri, contact).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show(Resources.SucesfullyInsertUpdated);
+                        Success();
                     }
                     else
                     {
-                        MessageBox.Show(Resources.ErrorInsertedUpdated);
-                        EventLog.WriteEntry("Application", response.ReasonPhrase + " " + response.RequestMessage, EventLogEntryType.Error);
+                        Failure(response);
                     }
                 }
             }
-            
+
+        }
+
+        private void Failure(HttpResponseMessage response)
+        {
+            MessageBox.Show(Resources.ErrorInsertedUpdated);
+            EventLog.WriteEntry("Application", response.ReasonPhrase + " " + response.RequestMessage, EventLogEntryType.Error);
         }
 
         private void InsertOrUpdateForm_Load(object sender, EventArgs e)
         {
-            if(_contact!=null)
+            if (_contact != null)
             {
                 firstNameTextBox.Text = _contact.FirstName;
                 lastNameTextBox.Text = _contact.LastName;
                 emailTextBox.Text = _contact.Email;
-                phoneNoTextBox.Text = _contact.Phone;                
+                phoneNoTextBox.Text = _contact.Phone;
             }
+        }
+        private void Success()
+        {
+            MessageBox.Show(Resources.SucesfullyInsertUpdated);
+            this.DialogResult = DialogResult.Cancel;
         }
     }
 }

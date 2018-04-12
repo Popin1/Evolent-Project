@@ -16,12 +16,7 @@ namespace WebAPIContactDemo.Controllers
         // GET: api/Contacts
         public IList<Contact> GetContacts()
         {
-            //Contact contact = new Contact { FirstName = "Popin", LastName = "Lisham", Email = "asasd@asf", Phone = "98354769", IsActive = true };
-            //Contact contact1 = new Contact { FirstName = "Popin", LastName = "Lisham", Email = "asasd@asf", Phone = "98354769", IsActive = true };
-            //IList<Contact> contacts = new List<Contact>() { contact ,contact1 };
-            //return contacts;
-
-            return db.Contacts.ToList();
+            return db.Contacts.Where(x => x.IsActive == true).ToList();
         }
 
         // GET: api/Contacts/5
@@ -29,11 +24,12 @@ namespace WebAPIContactDemo.Controllers
         public IHttpActionResult GetContact(int id)
         {
             Contact contact = db.Contacts.Find(id);
+
             if (contact == null)
             {
                 return NotFound();
             }
-            //Contact contact = new Contact { FirstName = "Popin", LastName = "Lisham", Email = "asasd@asf", Phone = "98354769", IsActive = true };
+
             return Ok(contact);
         }
 
@@ -92,15 +88,16 @@ namespace WebAPIContactDemo.Controllers
         public IHttpActionResult DeleteContact(int id)
         {
             Contact contact = db.Contacts.Find(id);
+
             if (contact == null)
             {
                 return NotFound();
             }
-
-            db.Contacts.Remove(contact);
+            contact.Phone = contact.Phone.Trim();
+            contact.IsActive = false;
             db.SaveChanges();
 
-            return Ok(contact);
+            return Ok(contact)
         }
 
         protected override void Dispose(bool disposing)

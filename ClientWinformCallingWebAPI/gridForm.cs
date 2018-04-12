@@ -45,6 +45,7 @@ namespace ClientWinformCallingWebAPI
             {
                 var value = result.Content.ReadAsAsync<List<Contact>>().Result;
                 contactsGridView.DataSource = value;
+                contactsGridView.Columns["IsActive"].Visible = false;
             }
             else
             {
