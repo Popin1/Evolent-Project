@@ -97,7 +97,7 @@ namespace WebAPIContactDemo.Controllers
             contact.IsActive = false;
             db.SaveChanges();
 
-            return Ok(contact)
+            return Ok(contact);
         }
 
         protected override void Dispose(bool disposing)
